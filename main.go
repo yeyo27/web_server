@@ -1,7 +1,10 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -22,6 +25,12 @@ var recipesDB []Recipe
 
 func init() {
 	recipesDB = make([]Recipe, 0)
+	fileBytes, err := os.ReadFile("recipes.json")
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "An error occurred:", err)
+		return
+	}
+	_ = json.Unmarshal(fileBytes, &recipesDB)
 }
 
 
@@ -33,7 +42,7 @@ func IndexHandler(c *gin.Context) {
 
 
 func GetRecipesHandler(c *gin.Context) {
-
+	c.JSON(http.StatusOK, recipesDB)
 }
 
 
